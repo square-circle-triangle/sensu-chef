@@ -15,8 +15,7 @@ depends "yum"
 # available @ http://community.opscode.com/cookbooks/rabbitmq
 depends "rabbitmq"
 
-# available @ https://github.com/miah/chef-redis
-depends "redis"
+depends "redisio"
 
 %w[
   ubuntu

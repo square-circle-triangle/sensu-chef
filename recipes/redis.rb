@@ -17,13 +17,6 @@
 # limitations under the License.
 #
 
-node.set.redis.config.listen_addr = "0.0.0.0"
-node.set.redis.config.listen_port = node.sensu.redis.port
+include_recipe "redisio::install"
+include_recipe "redisio::enable"
 
-if node.platform == "ubuntu" && node.platform_version <= "10.04"
-  include_recipe "redis::server_source"
-elsif node.platform == "debian"
-  include_recipe "redis::server_source"
-else
-  include_recipe "redis::server_package"
-end
