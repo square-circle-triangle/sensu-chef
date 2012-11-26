@@ -1,0 +1,37 @@
+#!/bin/sh
+#
+
+# PROVIDE: sensu_client
+# REQUIRE: NETWORKING
+# KEYWORD: shutdown
+
+#
+# Add the following lines to /etc/rc.conf to enable sensu_client:
+# sensu_client_enable (bool):    Set to "NO" by default.
+#                         Set it to "YES" to enable sensu_client.
+# sensu_client_flags (str):      Set to "" by default.
+# sensu_client__pidfile (str):    Set to "/var/spool/nagios/sensu_client.pid" by default.
+#
+
+. /etc/rc.subr
+
+name="sensu_client"
+rcvar=sensu_client_enable
+
+command="/usr/local/bin/sensu-client"
+command_args="-b"
+extra_commands="reload"
+
+sig_reload=HUP
+
+[ -z "${sensu_client_enable}" ] && sensu_client_enable="NO"
+[ -z "${sensu_client_configfile}" ] && sensu_client_configfile="/usr/local/etc/nrpe.cfg"
+[ -z "${sensu_client_pidfile}" ] && sensu_client_pidfile="/var/spool/sensu_client.pid"
+
+load_rc_config "${name}"
+
+pidfile="${sensu_client_pidfile}"
+
+command_args="${command_args} -p ${sensu_client_pidfile} -l /var/log/sensu/sensu-client.log"
+
+run_rc_command "$1"

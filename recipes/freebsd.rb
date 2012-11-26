@@ -1,8 +1,8 @@
 #
 # Cookbook Name:: sensu
-# Recipe:: client
+# Recipe:: freebsd
 #
-# Copyright 2012, Sonian Inc.
+# Copyright 2012, Alan Harper
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,9 +17,27 @@
 # limitations under the License.
 #
 
-service "sensu-client" do
-  service_name 'sensu_client' if node.platform == 'freebsd'
-  supports :status => true, :restart => true
-  action [:enable, :start]
-  subscribes :restart, resources("ruby_block[sensu_service_trigger]"), :delayed
+package_options = ""
+
+gem_package "sensu"
+
+user "sensu" do
+  system true
+end
+
+cookbook_file "/usr/local/etc/rc.d/sensu_client" do
+  owner "root"
+  group "wheel"
+  mode "0555"
+end
+
+directory "/etc/sensu/plugins" do
+  recursive true
+  owner "sensu"
+  group "wheel"
+  mode "0755"
+end
+
+service "sensu_client" do
+  action [:enable]
 end
